@@ -1,0 +1,2 @@
+include ':app', ':summarylib',':facebook'
+project(':facebook').projectDir = new File('sdk/facebook')

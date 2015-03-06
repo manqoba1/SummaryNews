@@ -1,0 +1,21 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light">
+        <!-- Customize your theme here. -->
+        <item name="android:windowTitleStyle">@style/actionBarStyle</item>
+        <item name="colorPrimary">@color/green</item>
+        <item name="colorPrimaryDark">@color/green</item>
+
+        <item name="android:fontFamily">sans-serif-light</item>
+
+    </style>
+
+    <style name="AppBaseTheme" parent="android:Theme.Holo.Light">
+        <item name="android:windowTitleStyle">@style/actionBarStyle</item>
+        <item name="colorPrimary">@color/green</item>
+        <item name="colorPrimaryDark">@color/green</item>
+
+        <item name="android:fontFamily">sans-serif-light</item>
+    </style>
+</resources>

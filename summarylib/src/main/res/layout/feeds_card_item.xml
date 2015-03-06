@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/apk/res-auto"
+    tools:cardCornerRadius="0dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/FC_url"
+            android:scaleType="fitXY"
+            android:elevation="3dp"
+            android:src="@drawable/ic_launcher" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:elevation="5dp"
+
+            android:layout_below="@+id/FC_url"
+            android:layout_alignParentStart="true"
+            android:id="@+id/linearLayout">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Large Text"
+                android:textColor="@color/maroon"
+                android:layout_weight="2"
+                android:layout_margin="5dp"
+                android:gravity="center_vertical"
+                android:id="@+id/FC_title" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="date"
+
+                android:textColor="@color/green"
+                android:gravity="end"
+                android:layout_weight="1"
+                android:id="@+id/FC_date" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_below="@+id/linearLayout"
+            android:elevation="2dp"
+            android:layout_alignParentStart="true">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nejksdfkj skdjfklsdjf djkfkldsklk sdkjfksdfj kmjkjdsnnf ds jksdjfs jsdkfjsdkj fsdlfjskdf kdsfjsdjkfj klsdjfkdsjf  "
+                android:autoLink="all"
+                android:id="@+id/FC_Summary"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="More..."
+                android:textColor="@color/blue_dark2"
+                android:id="@+id/FC_more"
+                android:layout_below="@+id/FC_Summary"
+                android:layout_alignParentStart="true" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

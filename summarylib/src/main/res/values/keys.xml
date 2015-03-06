@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="firebase_url">https://summarynews.firebaseio.com/</string>
+
+
+    <!-- Your Facebook App ID from your app settings on https://developers.facebook.com/ -->
+    <!-- More details here: https://www.firebase.com/docs/android/guide/login/facebook.html -->
+    <string name="facebook_app_id">418850921607963</string>
+    <string name="facebook_app_secret">1a8f6983a7d14b75114ba8beb21f4469</string>
+
+    <!-- Your Twitter consumer key and secret from your app settings on https://apps.twitter.com/ -->
+    <!-- More details here: https://www.firebase.com/docs/android/guide/login/twitter.html -->
+    <string name="twitter_consumer_key">UUzt5U5y3PABPRXi0uASsL2Uc</string>
+    <string name="twitter_consumer_secret">joSYo5TeO0OguLfA4w4O1DYa7VblzOxk5AIjL4w0aFXIs7R8wA</string>
+    <string name="twitter_access_token_secret">1dTMFWAZDsHa40Adqv4Pyy3howNvJ2n2y3Q8C2UgVns3T</string>
+    <string name="twitter_access_token">333579305-N2gOwKMuM9sGWRBnwrZR7PPdIxg4FtH8QYHmSvNe</string>
+</resources>
