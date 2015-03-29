@@ -1,69 +1,61 @@
 package com.sifiso.codetribe.summarylib.sql;
 
-import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-public class SummaryContract {
-    public static final String DATABASE_NAME = "newssummary.db";
+/**
+ * Created by sifiso on 3/28/2015.
+ */
+public final class SummaryContract {
+    public static final String CONTENT_AUTHORITY = "com.sifiso.codetribe.summarylib";
 
-    public static final int SUMMARY_LOADER_ID=1;
+    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
-    public static final String AUTHORITY = "com.sifiso.codetribe.summarylib.sql";
+    public static final String DATABASE_NAME="summary.db";
+    public static final String PATH_ARTICLE = "article";
+    public static final String PATH_CATEGORY = "category";
 
-    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
-
-    public static final String BASE_PATH_CAT = "category";
-    public static final String BASE_PATH_ART = "article";
-
+    public SummaryContract() {
+    }
 
     public static class ArticleEntry implements BaseColumns {
-        public static final String ARTICLE_TABLE = "article";
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_ARTICLE).build();
 
-        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(BASE_PATH_ART).build();
+        public static final String CONTENT_TYPE = "vnd.android.cursor.dir/" + CONTENT_AUTHORITY + "/" + PATH_ARTICLE;
+        public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/" + CONTENT_AUTHORITY + "/" + PATH_ARTICLE;
 
-        public static final String CONTENT_TYPE = "vnd.android.cursor.dir/" + AUTHORITY + "/" + BASE_PATH_ART;
-        public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/" + AUTHORITY + "/" + BASE_PATH_ART;
+        public static final String TABLE_NAME = "article";
+        public static final String _ID = "article_id";
+        public static final String COLUMN_CATEGORY_ID = "category_id";
+        public static final String COLUMN_ARTICLE_AUTHOR = "article_author";
+        public static final String COLUMN_ARTICLE_PUBLISH_DATE = "article_publish_date";
+        public static final String COLUMN_ARTICLE_SUMMARY = "article_summary";
+        public static final String COLUMN_ARTICLE_MEDIA_TYPE = "article_media_type";
+        public static final String COLUMN_ARTICLE_URI = "article_uri";
+        public static final String COLUMN_ARTICLE_URL = "article_url";
+        public static final String COLUMN_ARTICLE_TITLE = "article_title";
 
-        public static final String _ID = "id";
-        public static final String URL = "url";
-        public static final String AUTHOR = "author";
-        public static final String PUBLISH_DATE = "publish_date";
-        public static final String SOURCE = "source";
-        public static final String SOURCE_URL = "source_url";
-        public static final String SUMMARY = "summary";
-        public static final String TITLE = "title";
-        public static final String MEDIA_TYPE = "media_type";
-        public static final String IMAGE_URI = "image_uri";
+        public static Uri buildArticleUriId(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
 
-        public static final String SORT_ORDER_DEFAULT = _ID + " DESC";
-
-
-        public static final String[] DEFAULT_ARTICLE_QUERY_VALUE = new String[]{_ID, AUTHOR, URL,PUBLISH_DATE, SOURCE,
-                SOURCE_URL, SUMMARY, TITLE
-                , MEDIA_TYPE, IMAGE_URI};
     }
 
 
-    /*Category entry*/
     public static class CategoryEntry implements BaseColumns {
-        public static final String CATEGORY_TABLE = "category";
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_CATEGORY).build();
 
-        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(BASE_PATH_CAT).build();
+        public static final String CONTENT_TYPE = "vnd.android.cursor.dir/" + CONTENT_AUTHORITY + "/" + PATH_CATEGORY;
+        public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/" + CONTENT_AUTHORITY + "/" + PATH_CATEGORY;
 
-        public static final String CONTENT_TYPE = "vnd.android.cursor.dir/" + AUTHORITY + "/" + BASE_PATH_CAT;
-        public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/" + AUTHORITY + "/" + BASE_PATH_CAT;
+        public static final String TABLE_NAME = "category";
+        public static final String _ID = "category_id";
+        public static final String ROW_ID = "_id";
+        public static final String COLUMN_CATEGORY_NAME = "category_name";
 
-
-        public static final String CATEGORY_ID = "category_id";
-        public static final String DISPLAY_NAME = "display_category_name";
-        public static final String ENGLISH_NAME = "english_category_name";
-        public static final String URL_CATEGORY = "url_category_name";
-
-        public static final String[] DEFAULT_CATEGORY_QUERY_VALUE = new String[]{CATEGORY_ID, DISPLAY_NAME, ENGLISH_NAME,
-                URL_CATEGORY};
-
+        public static Uri buildCategoryUriId(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
     }
-
-
 }

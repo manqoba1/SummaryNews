@@ -9,25 +9,26 @@
         android:name=".SummaryApp"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
-        android:theme="@style/AppTheme"
-        android:label="@string/app_name">
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme">
+
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name"></activity>
-
-        <provider
-            android:name=".sql.SummaryProvider"
-            android:authorities="com.sifiso.codetribe.summarylib.sql"
-            android:enabled="true"
-            android:grantUriPermissions="true"
-            android:readPermission="com.sifiso.codetribe.summarylib.READ"
-            android:writePermission="com.sifiso.codetribe.summarylib.WRITE"
-            android:exported="true"></provider>
+            android:label="@string/app_name" />
 
         <service
             android:name=".util.SummaryIntentService"
-            android:exported="false"></service>
+            android:exported="false" />
 
+        <provider
+            android:authorities="com.sifiso.codetribe.summarylib"
+            android:name=".sql.SummaryProvider"
+            android:exported="false"
+            android:syncable="true" />
+
+        <activity
+            android:name=".BrowserActivity"
+            android:label="@string/title_activity_browser"></activity>
 
     </application>
 

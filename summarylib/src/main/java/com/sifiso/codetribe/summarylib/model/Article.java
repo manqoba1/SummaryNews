@@ -14,13 +14,15 @@ public class Article implements Serializable {
     private String publish_date;
     private String source, source_url, summary, title;
     private String media_type, uri;
+    private int category_id;
     private List<Enclosure> enclosures = new ArrayList<Enclosure>();
 
     public Article() {
     }
 
-    public Article(int id, String url, String author, String publish_date, String source, String source_url, String summary, String title, String media_type, String uri) {
+    public Article(int id,int category_id, String url, String author, String publish_date, String source, String source_url, String summary, String title, String media_type, String uri) {
         this.id = id;
+        this.category_id=category_id;
         this.author = author;
         this.publish_date = publish_date;
         this.source = source;
@@ -30,6 +32,14 @@ public class Article implements Serializable {
         this.media_type = media_type;
         this.uri = uri;
         this.url = url;
+    }
+
+    public int getCategory_id() {
+        return category_id;
+    }
+
+    public void setCategory_id(int category_id) {
+        this.category_id = category_id;
     }
 
     public String getUrl() {

@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.sifiso.codetribe.summarylib.R;
+import com.sifiso.codetribe.summarylib.model.Category;
 import com.sifiso.codetribe.summarylib.util.Statics;
 
 import java.text.DecimalFormat;
@@ -17,17 +18,17 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
-public class DrawerAdapter extends ArrayAdapter<String> {
+public class DrawerAdapter extends ArrayAdapter<Category> {
 
     private final LayoutInflater mInflater;
     private final int mLayoutRes;
-    private List<String> mList;
+    private List<Category> mList;
     private Context ctx;
     private int[] drawables;
 
 
     public DrawerAdapter(Context context, int textViewResourceId,
-                         List<String> list) {
+                         List<Category> list) {
         super(context, textViewResourceId, list);
         this.mLayoutRes = textViewResourceId;
         mList = list;
@@ -63,17 +64,17 @@ public class DrawerAdapter extends ArrayAdapter<String> {
             item = (ViewHolderItem) convertView.getTag();
         }
 
-        String p = mList.get(position);
+        Category p = mList.get(position);
         if(p.equals("")){
         }else{
-            item.DR_titles.setText(p);
+            item.DR_titles.setText(p.getEnglish_category_name());
         }
 
        // item.DR_icon_drawer.setImageDrawable(convertView.getResources().getDrawable(drawables[position]));
 
         Statics.setRobotoFontLight(ctx, item.DR_titles);
 
-        animateView(convertView);
+       // animateView(convertView);
         return (convertView);
     }
 

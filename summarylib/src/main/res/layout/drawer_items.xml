@@ -1,29 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:padding="8dp"
     android:background="@color/white">
 
     <ImageView
         android:layout_width="50dp"
-        android:layout_height="48dp"
+        android:layout_height="50dp"
         android:id="@+id/DR_icon_drawer"
-        android:src="@drawable/ic_launcher"
+        android:src="@drawable/world_512"
+        android:tint="@color/green"
+        android:scaleType="fitXY"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true" />
 
-    <TextView
-        android:layout_width="wrap_content"
+     <TextView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Medium Text"
         android:textColor="@color/blue_dark2"
-        android:layout_marginLeft="5dp"
+        android:layout_marginLeft="10dp"
         android:gravity="center_vertical"
         android:id="@+id/DR_titles"
-        android:layout_alignBottom="@+id/DR_icon_drawer"
-        android:layout_alignParentTop="true"
+        style="@style/Title3TextStyleGreen"
         android:layout_toEndOf="@+id/DR_icon_drawer" />
 
 

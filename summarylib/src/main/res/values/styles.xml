@@ -153,10 +153,10 @@
     </style>
 
     <style name="Title3TextStyleGreen" parent="@android:style/TextAppearance.Medium">
-        <item name="android:textColor">@color/green</item>
+        <item name="android:textColor">@color/blue_dark2</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textSize">18sp</item>
-        <item name="android:padding">5dp</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:padding">8dp</item>
     </style>
 
     <style name="Title3TextStyleRed" parent="@android:style/TextAppearance.Medium">

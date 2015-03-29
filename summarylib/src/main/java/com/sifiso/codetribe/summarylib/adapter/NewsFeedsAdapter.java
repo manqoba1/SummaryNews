@@ -51,39 +51,36 @@ public class NewsFeedsAdapter extends RecyclerView.Adapter<NewsFeedsAdapter.News
 
     @Override
     public void onBindViewHolder(final NewsFeedViewHolder holder, int position) {
-        Article article = mList.get(position);
+        final Article article = mList.get(position);
         holder.FC_date.setText(article.getPublish_date());
-        holder.FC_more.setText(article.getUrl());
+
         holder.FC_Summary.setText(article.getSummary());
         holder.FC_title.setText(article.getTitle());
         String image = article.getUri();
         Log.d(LOG, " " + article.getUri());
-
-
-        ImageLoader.getInstance().displayImage(article.getUri(), holder.FC_url, new ImageLoadingListener() {
+        holder.FC_author.setText(article.getAuthor());
+        holder.FC_more.setVisibility(View.GONE);
+        holder.FC_title.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onLoadingStarted(String s, View view) {
-
-            }
-
-            @Override
-            public void onLoadingFailed(String s, View view, FailReason failReason) {
-               // holder.FC_url.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_launcher));
-            }
-
-            @Override
-            public void onLoadingComplete(String s, View view, Bitmap bitmap) {
-               // holder.FC_url.setMaxHeight(bitmap.getWidth());
-//                Log.e(LOG,bitmap.toString());
-            }
-
-            @Override
-            public void onLoadingCancelled(String s, View view) {
-
+            public void onClick(View v) {
+                listener.onArticleView(article);
             }
         });
-
-
+        holder.FC_Summary.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onArticleView(article);
+            }
+        });
+        if (article.getUri() != null) {
+            if (article.getMedia_type().equals("image/jpeg")) {
+                ImageLoader.getInstance().displayImage(article.getUri(), holder.FC_url);
+            } else {
+                holder.FC_url.setVisibility(View.GONE);
+            }
+        } else {
+            holder.FC_url.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -94,7 +91,7 @@ public class NewsFeedsAdapter extends RecyclerView.Adapter<NewsFeedsAdapter.News
 
     public class NewsFeedViewHolder extends RecyclerView.ViewHolder {
         protected ImageView FC_url;
-        protected TextView FC_title, FC_date, FC_Summary, FC_more;
+        protected TextView FC_title, FC_date, FC_Summary, FC_more, FC_author;
         protected int position;
 
 
@@ -105,6 +102,7 @@ public class NewsFeedsAdapter extends RecyclerView.Adapter<NewsFeedsAdapter.News
             FC_Summary = (TextView) itemView.findViewById(R.id.FC_Summary);
             FC_title = (TextView) itemView.findViewById(R.id.FC_title);
             FC_more = (TextView) itemView.findViewById(R.id.FC_more);
+            FC_author = (TextView) itemView.findViewById(R.id.FC_author);
         }
 
     }

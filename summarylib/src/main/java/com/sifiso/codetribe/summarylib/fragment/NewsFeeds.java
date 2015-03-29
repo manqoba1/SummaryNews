@@ -56,7 +56,7 @@ public class NewsFeeds extends Fragment {
 
         articles = (ArrayList<Article>) getArguments().getSerializable("articles");
 
-        Toast.makeText(ctx, articles.get(0).getTitle(), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(ctx, articles.get(0).getTitle(), Toast.LENGTH_SHORT).show();
     }
 
     View v;
@@ -73,7 +73,7 @@ public class NewsFeeds extends Fragment {
         adapter = new NewsFeedsAdapter(ctx, articles, 1, new NewsFeedsAdapter.NewsFeedsAdapterListener() {
             @Override
             public void onArticleView(Article article) {
-
+                mListener.onArticleClicked(article);
             }
         });
         NW_list.setAdapter(adapter);
@@ -90,12 +90,12 @@ public class NewsFeeds extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-       /* try {
+        try {
             mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
-        }*/
+        }
     }
 
     @Override
@@ -104,16 +104,7 @@ public class NewsFeeds extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
+
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         public void onArticleClicked(Article article);

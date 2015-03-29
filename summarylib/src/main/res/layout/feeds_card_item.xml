@@ -2,6 +2,7 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/apk/res-auto"
     tools:cardCornerRadius="0dp"
+
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -9,29 +10,21 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/FC_url"
-            android:scaleType="fitXY"
-            android:elevation="3dp"
-            android:src="@drawable/ic_launcher" />
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:elevation="5dp"
-
-            android:layout_below="@+id/FC_url"
+            android:padding="8dp"
+            android:elevation="10dp"
+            android:background="@color/Gray"
             android:layout_alignParentStart="true"
             android:id="@+id/linearLayout">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Large Text"
                 android:textColor="@color/maroon"
                 android:layout_weight="2"
@@ -45,17 +38,28 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="date"
 
-                android:textColor="@color/green"
+                android:textColor="@color/white"
                 android:gravity="end"
                 android:layout_weight="1"
                 android:id="@+id/FC_date" />
         </LinearLayout>
 
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:id="@+id/FC_url"
+            android:scaleType="fitXY"
+            android:elevation="3dp"
+
+            android:layout_below="@+id/linearLayout"
+            android:src="@drawable/ic_launcher" />
+
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:layout_below="@+id/linearLayout"
+            android:layout_below="@+id/FC_url"
+            android:background="@color/beige"
+            android:padding="8dp"
             android:elevation="2dp"
             android:layout_alignParentStart="true">
 
@@ -77,6 +81,17 @@
                 android:id="@+id/FC_more"
                 android:layout_below="@+id/FC_Summary"
                 android:layout_alignParentStart="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Small Text"
+                android:layout_marginTop="5dp"
+                android:textColor="@color/navy_blue"
+                android:id="@+id/FC_author"
+                android:layout_below="@+id/FC_Summary"
+                android:layout_alignParentEnd="true" />
         </RelativeLayout>
     </RelativeLayout>
 
