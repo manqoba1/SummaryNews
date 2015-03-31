@@ -92,6 +92,8 @@ public class MainActivity extends ActionBarActivity implements ArticleReceiver.R
     protected void onStart() {
         super.onStart();
         wr = WebCheck.checkNetworkAvailability(getApplicationContext());
+
+        Log.d(TAG, "is onStart connected");
         if (wr.isMobileConnected()) {
             Log.d(TAG, "is mobile connected");
             getData();
@@ -102,6 +104,7 @@ public class MainActivity extends ActionBarActivity implements ArticleReceiver.R
             getData();
             return;
         }
+
         getLocalCategories();
 
     }
@@ -138,8 +141,11 @@ public class MainActivity extends ActionBarActivity implements ArticleReceiver.R
     private void getArticleByCategoryID(int id) {
         articles = new ArrayList<>();
         articles = utilProvider.getArticleByCategoryID(getContentResolver(), id);
-        if(articles == null){
-            Toast.makeText(ctx,"No articles found",Toast.LENGTH_LONG).show();;
+        //  Toast.makeText(ctx, "No articles found {0}"+id, Toast.LENGTH_LONG).show();
+
+        if (articles == null) {
+            Toast.makeText(ctx, "No articles found", Toast.LENGTH_LONG).show();
+
             return;
         }
         setFragment();
@@ -217,6 +223,7 @@ public class MainActivity extends ActionBarActivity implements ArticleReceiver.R
     private void getData() {
         RequestData data = new RequestData();
         data.setCategoryURL();
+        Log.d(TAG, "id : ");
         progressBar.setVisibility(View.VISIBLE);
         BaseVolley.getRemoteData(data, getApplicationContext(), new BaseVolley.BohaVolleyListener() {
             @Override
@@ -285,6 +292,7 @@ public class MainActivity extends ActionBarActivity implements ArticleReceiver.R
         if (isFirst) {
             categoryName = categories.get(2).getEnglish_category_name();
             setTitle(categories.get(2).getEnglish_category_name());
+            Log.d(TAG, "id : " + categories.get(2).getCategory_id());
             getArticleByCategoryID(categories.get(2).getCategory_id());
             isFirst = false;
         }
@@ -305,6 +313,7 @@ public class MainActivity extends ActionBarActivity implements ArticleReceiver.R
         RequestData data = new RequestData();
         data.setArticleByCategory(categoryID, searcher);
         progressBar.setVisibility(View.GONE);
+        Log.d(TAG, "id : " + categoryID);
         BaseVolley.getRemoteData(data, getApplicationContext(), new BaseVolley.BohaVolleyListener() {
             @Override
             public void onResponseReceived(JSONArray r) {
