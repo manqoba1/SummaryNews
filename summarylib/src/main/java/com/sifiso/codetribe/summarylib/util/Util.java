@@ -65,6 +65,20 @@ public class Util {
         public void onItemSelected(int index);
     }
 
+    public static String prettifyString(String raw) {
+        if (raw == null || raw.trim().isEmpty() || !raw.trim().contains(" ")) {
+            return "";
+        }
+        for (int i = 0; i < raw.length(); i++) {
+            raw = raw.replaceAll("\n", " ");
+            /*if(raw.contains("...")){
+                raw = raw.replaceAll(" ", "\n");
+            } */
+        }
+
+        return raw;
+    }
+
 
     public static void flashInfinite(final View view, final long duration) {
         ObjectAnimator an = ObjectAnimator.ofFloat(view, "alpha", 0, 1);
@@ -632,7 +646,10 @@ public class Util {
         SimpleDateFormat df = new SimpleDateFormat("EEEE, dd MMMM yyyy HH:mm");
         return df.format(date);
     }
-
+    public static String getLongDateTimeNoSecondsString(String date) {
+        SimpleDateFormat df = new SimpleDateFormat("EEEE, dd MMMM yyyy HH:mm");
+        return df.format(new Date(date));
+    }
     public static String getLongDateForPDF(long date) {
         SimpleDateFormat df = new SimpleDateFormat("EEE dd MMM yyyy");
         Date d = new Date(date);

@@ -2,12 +2,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="8dp"
     tools:context="com.sifiso.codetribe.summarylib.fragment.NewsFeeds">
 
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/NW_list"
         android:layout_width="match_parent"
+
         android:layout_height="match_parent" />
 
 

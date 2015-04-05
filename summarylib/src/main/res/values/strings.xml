@@ -6,9 +6,11 @@
     <string name="action_settings">Settings</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello_blank_fragment">Articles are not available for this category, try to connect to network to get them....</string>
     <string name="error_network_unavailable">Network unavailable. Check settings and signal strength</string>
     <string name="error_server_unavailable">Server is unavailable due to maintenance. Please try later.</string>
-    <string name="error_server_comms">Problem communicating with the server. Please try again or contact mgGolf support</string>
+    <string name="error_server_comms">Problem communicating with the server. Please try again or contact support</string>
     <string name="title_activity_browser">Browser</string>
+    <string name="notification_title">SummaryNews</string>
+    <string name="connect_to_browser">Connect to browser your article...</string>
 </resources>

@@ -27,10 +27,7 @@ public class SummaryApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        if (!BaseVolley.checkNetworkOnDevice(getApplicationContext())) {
-           return;
-        }
-        BohaVolley.getRequestQueue(getApplicationContext());
+
 
         DisplayImageOptions defaultOptions =
                 new DisplayImageOptions.Builder()
@@ -47,6 +44,11 @@ public class SummaryApp extends Application {
                 .memoryCache(new LruMemoryCache(16 * 1024 * 1024))
                 .defaultDisplayImageOptions(defaultOptions)
                 .build();
+
+        if (!BaseVolley.checkNetworkOnDevice(getApplicationContext())) {
+           // return;
+        }
+        BohaVolley.getRequestQueue(getApplicationContext());
 
         ImageLoader.getInstance().init(config);
     }

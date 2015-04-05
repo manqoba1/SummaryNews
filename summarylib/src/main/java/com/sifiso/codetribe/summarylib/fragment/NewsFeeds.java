@@ -69,6 +69,7 @@ public class NewsFeeds extends Fragment {
         NW_list = (RecyclerView) v.findViewById(R.id.NW_list);
         NW_list.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
         NW_list.setItemAnimator(new DefaultItemAnimator());
+
         NW_list.addItemDecoration(new DividerItemDecoration(ctx, RecyclerView.VERTICAL));
         adapter = new NewsFeedsAdapter(ctx, articles, 1, new NewsFeedsAdapter.NewsFeedsAdapterListener() {
             @Override
@@ -77,6 +78,13 @@ public class NewsFeeds extends Fragment {
             }
         });
         NW_list.setAdapter(adapter);
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                adapter.notifyDataSetChanged();
+            }
+        });
+
         return v;
     }
 

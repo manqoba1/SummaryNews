@@ -12,5 +12,18 @@
         android:layout_height="match_parent"
         android:id="@+id/browser"
         android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentRight="true" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:backgroundTint="@color/green"
+        android:backgroundTintMode="src_over"
+        android:progressBackgroundTint="@color/green"
+        android:progressBackgroundTintMode="screen"
+        android:padding="@dimen/mon_wide"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
 </RelativeLayout>

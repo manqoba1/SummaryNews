@@ -3,19 +3,19 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light">
         <!-- Customize your theme here. -->
-        <item name="android:windowTitleStyle">@style/actionBarStyle</item>
-        <item name="colorPrimary">@color/green</item>
-        <item name="colorPrimaryDark">@color/green</item>
-
+        <item name="colorPrimary">@color/grey</item>
+        <item name="colorPrimaryDark">@color/Gray</item>
+        <item name="android:titleTextStyle">@style/actionBarStyle</item>
         <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:textColorPrimary">@color/white</item>
 
     </style>
 
     <style name="AppBaseTheme" parent="android:Theme.Holo.Light">
-        <item name="android:windowTitleStyle">@style/actionBarStyle</item>
-        <item name="colorPrimary">@color/green</item>
-        <item name="colorPrimaryDark">@color/green</item>
-
+        <item name="colorPrimary">@color/opaque_red</item>
+        <item name="colorPrimaryDark">@color/orange</item>
+        <item name="android:titleTextStyle">@style/actionBarStyle</item>
         <item name="android:fontFamily">sans-serif-light</item>
+
     </style>
 </resources>

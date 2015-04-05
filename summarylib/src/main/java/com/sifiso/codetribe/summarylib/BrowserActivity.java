@@ -5,9 +5,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.webkit.JavascriptInterface;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -20,6 +23,8 @@ import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.sifiso.codetribe.summarylib.model.Article;
 import com.sifiso.codetribe.summarylib.model.ResponseData;
+import com.sifiso.codetribe.summarylib.util.WebCheck;
+import com.sifiso.codetribe.summarylib.util.WebCheckResult;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,29 +32,53 @@ import org.json.JSONObject;
 
 public class BrowserActivity extends ActionBarActivity {
     WebView browser;
+    WebCheckResult rs;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browser);
         browser = (WebView) findViewById(R.id.browser);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.VISIBLE);
         Article article = (Article) getIntent().getSerializableExtra("article");
         getSupportActionBar().setTitle(article.getTitle());
+        rs = WebCheck.checkNetworkAvailability(getApplicationContext());
         browser.setWebViewClient(new MyClient());
+        browser.getSettings().setAppCacheMaxSize(10 * 1024 * 1024); // 10MB
+        browser.getSettings().setAppCachePath(getApplicationContext().getCacheDir().getAbsolutePath());
+        browser.getSettings().setAllowFileAccess(true);
+        browser.getSettings().setAppCacheEnabled(true);
         browser.getSettings().setJavaScriptEnabled(true);
         browser.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
+        browser.getSettings().setDomStorageEnabled(true);
+        browser.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+        browser.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT); // load online by default
+
+        if (!rs.isWifiConnected()) { // loading offline
+            browser.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+        }
         browser.setScrollbarFadingEnabled(false);
         browser.loadUrl(article.getUrl());
+        //browser.onKeyDown()
         browser.canGoBack();
     }
 
 
-
     private class MyClient extends WebViewClient {
+
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             view.loadUrl(url);
+            // progressBar.setVisibility(View.GONE);
             return true;
+        }
+
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            super.onPageFinished(view, url);
+       //     progressBar.setVisibility(View.GONE);
         }
     }
 

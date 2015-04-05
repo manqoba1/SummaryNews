@@ -2,6 +2,9 @@ package com.sifiso.codetribe.summarylib;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Handler;
 
@@ -23,6 +26,7 @@ import android.widget.Toast;
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.sifiso.codetribe.summarylib.adapter.DrawerAdapter;
+import com.sifiso.codetribe.summarylib.fragment.EmptyFragment;
 import com.sifiso.codetribe.summarylib.fragment.NewsFeeds;
 import com.sifiso.codetribe.summarylib.model.Article;
 import com.sifiso.codetribe.summarylib.model.Category;
@@ -33,6 +37,7 @@ import com.sifiso.codetribe.summarylib.sql.UtilProvider;
 import com.sifiso.codetribe.summarylib.toolbox.BaseVolley;
 import com.sifiso.codetribe.summarylib.util.SummaryIntentService;
 import com.sifiso.codetribe.summarylib.util.TimerUtil;
+import com.sifiso.codetribe.summarylib.util.Util;
 import com.sifiso.codetribe.summarylib.util.WebCheck;
 import com.sifiso.codetribe.summarylib.util.WebCheckResult;
 import com.sifiso.codetribe.summarylib.util.bean.ArticleReceiver;
@@ -41,6 +46,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,6 +68,7 @@ public class MainActivity extends ActionBarActivity implements ArticleReceiver.R
     private String[] titles;
     private List<String> sTitles = new ArrayList<>();
     private UtilProvider utilProvider;
+    int itemIndex = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +80,14 @@ public class MainActivity extends ActionBarActivity implements ArticleReceiver.R
         //progressBar.setVisibility(View.GONE);
         utilProvider = new UtilProvider(ctx);
         drawerListView = (ListView) findViewById(R.id.left_drawer);
+        LayoutInflater in = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v = in.inflate(R.layout.hero_drawer, null);
+        View footer = in.inflate(R.layout.drawer_footer, null);
+        Button img = (Button) v.findViewById(R.id.button);
+        drawerListView.addHeaderView(v);
+        if (savedInstanceState != null) {
+            itemIndex = savedInstanceState.getInt("itemIndex");
+        }
     }
 
 
@@ -84,6 +102,19 @@ public class MainActivity extends ActionBarActivity implements ArticleReceiver.R
         //getDataArticle(26, null);
         // refresher();
         return true;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putSerializable("article", articles);
+        outState.putInt("itemIndex", itemIndex);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+
+        super.onConfigurationChanged(newConfig);
     }
 
     WebCheckResult wr;
@@ -113,21 +144,22 @@ public class MainActivity extends ActionBarActivity implements ArticleReceiver.R
         categories = utilProvider.getAllCategory(getContentResolver());
         mDrawerAdapter = new DrawerAdapter(getApplicationContext(), R.layout.drawer_items, categories);
         drawerListView.setAdapter(mDrawerAdapter);
-        LayoutInflater in = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+       /* LayoutInflater in = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = in.inflate(R.layout.hero_drawer, null);
         View footer = in.inflate(R.layout.drawer_footer, null);
         Button img = (Button) v.findViewById(R.id.button);
         //img.setImageDrawable(Util.getRandomHeroImage(ctx));
         drawerListView.addHeaderView(v);
-        drawerListView.addFooterView(footer);
+        drawerListView.addFooterView(footer);*/
 
-
+        drawerListView.setSelection(itemIndex);
         drawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                setTitle(categories.get(i - 1).getEnglish_category_name());
-                categoryName = categories.get(i - 1).getEnglish_category_name();
-                getArticleByCategoryID(categories.get(i - 1).getCategory_id());
+                itemIndex = i - 1;
+                setTitle(categories.get(itemIndex).getEnglish_category_name());
+                categoryName = categories.get(itemIndex).getEnglish_category_name();
+                getArticleByCategoryID(categories.get(itemIndex).getCategory_id());
                 drawerListView.setSelection(i);
                 // mDrawerLayout.setDrawerTitle(i, sTitles.get(i));
                 mDrawerLayout.closeDrawers();
@@ -143,9 +175,9 @@ public class MainActivity extends ActionBarActivity implements ArticleReceiver.R
         articles = utilProvider.getArticleByCategoryID(getContentResolver(), id);
         //  Toast.makeText(ctx, "No articles found {0}"+id, Toast.LENGTH_LONG).show();
 
-        if (articles == null) {
-            Toast.makeText(ctx, "No articles found", Toast.LENGTH_LONG).show();
-
+        if (articles == null || articles.isEmpty()) {
+            // Toast.makeText(ctx, "No articles found, please connect to internet/mobile network", Toast.LENGTH_LONG).show();
+            setEmptyError();
             return;
         }
         setFragment();
@@ -225,56 +257,59 @@ public class MainActivity extends ActionBarActivity implements ArticleReceiver.R
         data.setCategoryURL();
         Log.d(TAG, "id : ");
         progressBar.setVisibility(View.VISIBLE);
+
         BaseVolley.getRemoteData(data, getApplicationContext(), new BaseVolley.BohaVolleyListener() {
             @Override
-            public void onResponseReceived(JSONArray r) {
-                try {
+            public void onResponseReceived(final JSONArray r) {
 
-                    categories = new ArrayList<Category>();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            categories = new ArrayList<Category>();
 
-                    for (int i = 0; i < r.length(); i++) {
+                            for (int i = 0; i < r.length(); i++) {
 
-                        // jsonObject.getString("category_id")
-                        Category ar = new Category();
-                        JSONObject jsonObject = new JSONObject(r.optString(i));
-                        ar.setCategory_id(jsonObject.optInt("category_id"));
-                        ar.setDisplay_category_name(jsonObject.optString("display_category_name"));
-                        ar.setUrl_category_name(jsonObject.optString("url_category_name"));
-                        ar.setEnglish_category_name(jsonObject.optString("english_category_name"));
-                        // Log.e(TAG, "hello : " + ar.getCategory_id());
-
-                        categories.add(ar);
-                        sTitles.add(ar.getEnglish_category_name());
-                        utilProvider.insertCategory(ar);
-                    }
-                    mDrawerAdapter = new DrawerAdapter(getApplicationContext(), R.layout.drawer_items, categories);
-                    drawerListView.setAdapter(mDrawerAdapter);
-                    LayoutInflater in = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    View v = in.inflate(R.layout.hero_drawer, null);
-                    View footer = in.inflate(R.layout.drawer_footer, null);
-                    Button img = (Button) v.findViewById(R.id.button);
-                    //img.setImageDrawable(Util.getRandomHeroImage(ctx));
-                    drawerListView.addHeaderView(v);
-                    drawerListView.addFooterView(footer);
+                                // jsonObject.getString("category_id")
+                                Category ar = new Category();
+                                JSONObject jsonObject = new JSONObject(r.optString(i));
+                                ar.setCategory_id(jsonObject.optInt("category_id"));
+                                ar.setDisplay_category_name(jsonObject.optString("display_category_name"));
+                                ar.setUrl_category_name(jsonObject.optString("url_category_name"));
+                                ar.setEnglish_category_name(jsonObject.optString("english_category_name"));
+                                // Log.e(TAG, "hello : " + ar.getCategory_id());
 
 
-                    drawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                            setTitle(categories.get(i - 1).getEnglish_category_name());
-                            categoryName = categories.get(i - 1).getEnglish_category_name();
-                            getDataArticle(categories.get(i - 1).getCategory_id(), null);
-                            drawerListView.setSelection(i);
-                            // mDrawerLayout.setDrawerTitle(i, sTitles.get(i));
-                            mDrawerLayout.closeDrawers();
+                                categories.add(ar);
+                                sTitles.add(ar.getEnglish_category_name());
+                                utilProvider.insertCategory(ar);
+                            }
+                            mDrawerAdapter = new DrawerAdapter(getApplicationContext(), R.layout.drawer_items, categories);
+                            drawerListView.setAdapter(mDrawerAdapter);
+
+
+                            drawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                    itemIndex = i - 1;
+                                    setTitle(categories.get(itemIndex).getEnglish_category_name());
+                                    categoryName = categories.get(itemIndex).getEnglish_category_name();
+                                    getDataArticle(categories.get(itemIndex).getCategory_id(), null, categories.get(itemIndex));
+                                    drawerListView.setSelection(i);
+                                    // mDrawerLayout.setDrawerTitle(i, sTitles.get(i));
+                                    mDrawerLayout.closeDrawers();
+                                    isFirst=false;
+                                }
+                            });
+
+                            setSelect();
+                            progressBar.setVisibility(View.GONE);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                    });
+                    }
+                });
 
-                    setSelect();
-                    progressBar.setVisibility(View.GONE);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
             }
 
             @Override
@@ -284,16 +319,17 @@ public class MainActivity extends ActionBarActivity implements ArticleReceiver.R
         });
     }
 
-    int index = 0;
     boolean isFirst = true;
     String categoryName;
+    EmptyFragment emptyFragment;
 
     private void setSelect() {
         if (isFirst) {
-            categoryName = categories.get(2).getEnglish_category_name();
-            setTitle(categories.get(2).getEnglish_category_name());
-            Log.d(TAG, "id : " + categories.get(2).getCategory_id());
-            getArticleByCategoryID(categories.get(2).getCategory_id());
+            categoryName = categories.get(itemIndex).getEnglish_category_name();
+            setTitle(categories.get(itemIndex).getEnglish_category_name());
+            drawerListView.setSelection(itemIndex);
+            Log.d(TAG, "id : " + categories.get(itemIndex).getCategory_id());
+            getArticleByCategoryID(categories.get(itemIndex).getCategory_id());
             isFirst = false;
         }
     }
@@ -301,59 +337,85 @@ public class MainActivity extends ActionBarActivity implements ArticleReceiver.R
     NewsFeeds newsFeeds;
 
     private void setFragment() {
-        newsFeeds = new NewsFeeds();
-        Bundle b = new Bundle();
-        b.putSerializable("articles", articles);
-        newsFeeds.setArguments(b);
-        getSupportFragmentManager().beginTransaction().add(R.id.content_frame, newsFeeds).commit();
-        // fm.add(R.id.content_frame, newsFeeds, null).commit();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                newsFeeds = new NewsFeeds();
+                Bundle b = new Bundle();
+                b.putSerializable("articles", articles);
+                newsFeeds.setArguments(b);
+                getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, newsFeeds).commit();
+                // fm.add(R.id.content_frame, newsFeeds, null).commit();
+            }
+        });
+
     }
 
-    private void getDataArticle(final int categoryID, String searcher) {
+    private void setEmptyError() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                emptyFragment = new EmptyFragment();
+
+                getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, emptyFragment).commit();
+                // fm.add(R.id.content_frame, newsFeeds, null).commit();
+            }
+        });
+
+    }
+
+    private void getDataArticle(final int categoryID, String searcher, final Category c) {
         RequestData data = new RequestData();
         data.setArticleByCategory(categoryID, searcher);
-        progressBar.setVisibility(View.GONE);
+        //progressBar.setVisibility(View.GONE);
         Log.d(TAG, "id : " + categoryID);
         BaseVolley.getRemoteData(data, getApplicationContext(), new BaseVolley.BohaVolleyListener() {
             @Override
-            public void onResponseReceived(JSONArray r) {
-                try {
-                    articles = new ArrayList<Article>();
+            public void onResponseReceived(final JSONArray r) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            articles = new ArrayList<Article>();
+                            Log.d(TAG, c.getEnglish_category_name());
+                            // utilProvider.insertCategory(c);
+                            for (int i = 0; i < r.length(); i++) {
 
-                    for (int i = 0; i < r.length(); i++) {
+                                Article ar = new Article();
+                                JSONObject js = new JSONObject(r.optString(i));
+                                ar.setSummary(Util.prettifyString(js.optString("summary")));
+                                ar.setUrl(js.optString("url"));
+                                ar.setTitle(js.optString("title"));
+                                ar.setSource_url(js.optString("source_url"));
+                                ar.setSource(js.optString("source"));
+                                ar.setPublish_date(js.optString("publish_date"));
+                                ar.setAuthor(js.optString("author"));
+                                ar.setCategory_id(categoryID);
+                                // Log.i(TAG, ar.getPublish_date());
+                                if (js.optJSONArray("enclosures") != null) {
+                                    for (int x = 0; x < js.optJSONArray("enclosures").length(); x++) {
+                                        JSONObject encl = (JSONObject) js.optJSONArray("enclosures").get(x);
+                                        // Log.i(TAG, encl.toString() + " hello");
+                                        ar.setMedia_type(encl.optString("media_type"));
+                                        ar.setUri(encl.optString("uri"));
+                                    }
+                                }
+                                // response.setArticle(ar);
 
-                        Article ar = new Article();
-                        JSONObject js = new JSONObject(r.optString(i));
-                        //Log.d(TAG, js.toString());
-                        ar.setSummary(js.optString("summary"));
-                        ar.setUrl(js.optString("url"));
-                        ar.setTitle(js.optString("title"));
-                        ar.setSource_url(js.optString("source_url"));
-                        ar.setSource(js.optString("source"));
-                        ar.setPublish_date(js.optString("publish_date"));
-                        ar.setAuthor(js.optString("author"));
-                        ar.setCategory_id(categoryID);
-                        // Log.i(TAG, ar.getPublish_date());
-                        if (js.optJSONArray("enclosures") != null) {
-                            for (int x = 0; x < js.optJSONArray("enclosures").length(); x++) {
-                                JSONObject encl = (JSONObject) js.optJSONArray("enclosures").get(x);
-                                // Log.i(TAG, encl.toString() + " hello");
-                                ar.setMedia_type(encl.optString("media_type"));
-                                ar.setUri(encl.optString("uri"));
+                                articles.add(ar);
+                                utilProvider.insertArticle(ar);
                             }
+                            progressBar.setVisibility(View.GONE);
+
+                            setFragment();
+
+                            Log.i(TAG, articles.size() + "");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                        // response.setArticle(ar);
-
-                        articles.add(ar);
-                        utilProvider.insertArticle(ar);
                     }
-                    progressBar.setVisibility(View.GONE);
+                });
 
-                    setFragment();
-                    Log.i(TAG, articles.size() + "");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
             }
 
             @Override
@@ -361,6 +423,17 @@ public class MainActivity extends ActionBarActivity implements ArticleReceiver.R
 
             }
         });
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(isFirst){
+            super.onBackPressed();
+        }
+        isFirst=true;
+        mDrawerLayout.openDrawer(drawerListView);
+
 
     }
 
@@ -391,9 +464,23 @@ public class MainActivity extends ActionBarActivity implements ArticleReceiver.R
 
     @Override
     public void onArticleClicked(Article article) {
-        Intent intent = new Intent(MainActivity.this, BrowserActivity.class);
-        intent.putExtra("article", article);
-        intent.putExtra("header", categoryName);
-        startActivity(intent);
+        wr = WebCheck.checkNetworkAvailability(ctx);
+        if (wr.isWifiConnected()) {
+            Intent intent = new Intent(MainActivity.this, BrowserActivity.class);
+            intent.putExtra("article", article);
+            intent.putExtra("header", categoryName);
+            startActivity(intent);
+
+            return;
+        }
+        if (wr.isMobileConnected()) {
+            Intent intent = new Intent(MainActivity.this, BrowserActivity.class);
+            intent.putExtra("article", article);
+            intent.putExtra("header", categoryName);
+            startActivity(intent);
+
+            return;
+        }
+        Toast.makeText(ctx, R.string.connect_to_browser, Toast.LENGTH_LONG).show();
     }
 }

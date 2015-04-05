@@ -2,6 +2,7 @@ package com.sifiso.codetribe.summarylib.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.toolbox.NetworkImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
@@ -52,7 +54,8 @@ public class NewsFeedsAdapter extends RecyclerView.Adapter<NewsFeedsAdapter.News
     @Override
     public void onBindViewHolder(final NewsFeedViewHolder holder, int position) {
         final Article article = mList.get(position);
-        holder.FC_date.setText(article.getPublish_date());
+        String date=article.getPublish_date();
+        holder.FC_date.setText(date);
 
         holder.FC_Summary.setText(article.getSummary());
         holder.FC_title.setText(article.getTitle());
@@ -72,8 +75,15 @@ public class NewsFeedsAdapter extends RecyclerView.Adapter<NewsFeedsAdapter.News
                 listener.onArticleView(article);
             }
         });
+        if(article.getSummary().trim().isEmpty() || article == null){
+            holder.cardView.setVisibility(View.GONE);
+           // mList.remove(article);
+
+        }
         if (article.getUri() != null) {
             if (article.getMedia_type().equals("image/jpeg")) {
+                //holder.FC_url.setImageUrl(article.getUri(),new com.android.volley.toolbox.ImageLoader());
+                holder.FC_url.setVisibility(View.VISIBLE);
                 ImageLoader.getInstance().displayImage(article.getUri(), holder.FC_url);
             } else {
                 holder.FC_url.setVisibility(View.GONE);
@@ -92,6 +102,7 @@ public class NewsFeedsAdapter extends RecyclerView.Adapter<NewsFeedsAdapter.News
     public class NewsFeedViewHolder extends RecyclerView.ViewHolder {
         protected ImageView FC_url;
         protected TextView FC_title, FC_date, FC_Summary, FC_more, FC_author;
+        protected CardView cardView;
         protected int position;
 
 
@@ -103,6 +114,7 @@ public class NewsFeedsAdapter extends RecyclerView.Adapter<NewsFeedsAdapter.News
             FC_title = (TextView) itemView.findViewById(R.id.FC_title);
             FC_more = (TextView) itemView.findViewById(R.id.FC_more);
             FC_author = (TextView) itemView.findViewById(R.id.FC_author);
+            cardView = (CardView) itemView.findViewById(R.id.cardView);
         }
 
     }

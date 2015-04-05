@@ -2,7 +2,7 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/apk/res-auto"
     tools:cardCornerRadius="0dp"
-
+android:id="@+id/cardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -12,13 +12,11 @@
 
 
         <LinearLayout
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:padding="8dp"
             android:elevation="10dp"
-            android:background="@color/Gray"
-            android:layout_alignParentStart="true"
             android:id="@+id/linearLayout">
 
             <TextView
@@ -26,7 +24,8 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Large Text"
-                android:textColor="@color/maroon"
+                style="@style/Title2TextStyleBlack"
+                android:textColor="@color/black"
                 android:layout_weight="2"
                 android:layout_margin="5dp"
                 android:gravity="center_vertical"
@@ -38,8 +37,9 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="date"
 
-                android:textColor="@color/white"
-                android:gravity="end"
+                android:textColor="@color/grey"
+                android:gravity="start"
+                android:layout_gravity="right"
                 android:layout_weight="1"
                 android:id="@+id/FC_date" />
         </LinearLayout>
@@ -58,19 +58,20 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/FC_url"
-            android:background="@color/beige"
             android:padding="8dp"
             android:elevation="2dp"
-            android:layout_alignParentStart="true">
+            android:layout_alignParentLeft="true">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Nejksdfkj skdjfklsdjf djkfkldsklk sdkjfksdfj kmjkjdsnnf ds jksdjfs jsdkfjsdkj fsdlfjskdf kdsfjsdjkfj klsdjfkdsjf  "
                 android:autoLink="all"
+                android:gravity="fill_horizontal"
                 android:id="@+id/FC_Summary"
+                android:maxLines="10"
                 android:layout_alignParentTop="true"
-                android:layout_alignParentStart="true" />
+                android:layout_alignParentLeft="true" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -80,7 +81,7 @@
                 android:textColor="@color/blue_dark2"
                 android:id="@+id/FC_more"
                 android:layout_below="@+id/FC_Summary"
-                android:layout_alignParentStart="true" />
+                android:layout_alignParentLeft="true" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -91,7 +92,7 @@
                 android:textColor="@color/navy_blue"
                 android:id="@+id/FC_author"
                 android:layout_below="@+id/FC_Summary"
-                android:layout_alignParentEnd="true" />
+                android:layout_alignParentRight="true" />
         </RelativeLayout>
     </RelativeLayout>
 

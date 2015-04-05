@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:elevation="5dp"
-
+        android:background="@color/Gray"
         android:layout_below="@+id/FC_url"
         android:layout_alignParentStart="true"
         android:id="@+id/linearLayout">
@@ -39,7 +39,7 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="date"
 
-            android:textColor="@color/green"
+            android:textColor="@color/white"
             android:gravity="end"
             android:layout_weight="1"
             android:id="@+id/FC_date" />
