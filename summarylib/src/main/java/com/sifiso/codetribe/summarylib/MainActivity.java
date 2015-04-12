@@ -68,7 +68,7 @@ public class MainActivity extends ActionBarActivity implements ArticleReceiver.R
     private String[] titles;
     private List<String> sTitles = new ArrayList<>();
     private UtilProvider utilProvider;
-    int itemIndex = 0;
+    int itemIndex = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,10 +96,16 @@ public class MainActivity extends ActionBarActivity implements ArticleReceiver.R
         // Inflate the menu; this a
         // dds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        //getDataArticle(26, null);
+        wr = WebCheck.checkNetworkAvailability(getApplicationContext());
 
+        Log.d(TAG, "is onStart connected");
+        if (wr.isMobileConnected() || wr.isWifiConnected()) {
+            Log.d(TAG, "is mobile connected");
+            getData();
+        } else {
+            getLocalCategories();
+        }
 
-        //getDataArticle(26, null);
         // refresher();
         return true;
     }
@@ -122,21 +128,7 @@ public class MainActivity extends ActionBarActivity implements ArticleReceiver.R
     @Override
     protected void onStart() {
         super.onStart();
-        wr = WebCheck.checkNetworkAvailability(getApplicationContext());
 
-        Log.d(TAG, "is onStart connected");
-        if (wr.isMobileConnected()) {
-            Log.d(TAG, "is mobile connected");
-            getData();
-            return;
-        }
-        if (wr.isWifiConnected()) {
-            Log.d(TAG, "is wifi connected");
-            getData();
-            return;
-        }
-
-        getLocalCategories();
 
     }
 
@@ -267,18 +259,8 @@ public class MainActivity extends ActionBarActivity implements ArticleReceiver.R
                     public void run() {
                         try {
                             categories = new ArrayList<Category>();
-
                             for (int i = 0; i < r.length(); i++) {
-
-                                // jsonObject.getString("category_id")
-                                Category ar = new Category();
-                                JSONObject jsonObject = new JSONObject(r.optString(i));
-                                ar.setCategory_id(jsonObject.optInt("category_id"));
-                                ar.setDisplay_category_name(jsonObject.optString("display_category_name"));
-                                ar.setUrl_category_name(jsonObject.optString("url_category_name"));
-                                ar.setEnglish_category_name(jsonObject.optString("english_category_name"));
-                                // Log.e(TAG, "hello : " + ar.getCategory_id());
-
+                                Category ar = categoryModel(new JSONObject(r.optString(i)));
 
                                 categories.add(ar);
                                 sTitles.add(ar.getEnglish_category_name());
@@ -286,7 +268,6 @@ public class MainActivity extends ActionBarActivity implements ArticleReceiver.R
                             }
                             mDrawerAdapter = new DrawerAdapter(getApplicationContext(), R.layout.drawer_items, categories);
                             drawerListView.setAdapter(mDrawerAdapter);
-
 
                             drawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                 @Override
@@ -298,7 +279,7 @@ public class MainActivity extends ActionBarActivity implements ArticleReceiver.R
                                     drawerListView.setSelection(i);
                                     // mDrawerLayout.setDrawerTitle(i, sTitles.get(i));
                                     mDrawerLayout.closeDrawers();
-                                    isFirst=false;
+                                    isFirst = false;
                                 }
                             });
 
@@ -318,6 +299,16 @@ public class MainActivity extends ActionBarActivity implements ArticleReceiver.R
             }
         });
     }
+
+    private Category categoryModel(JSONObject jsonObject) {
+        Category ar = new Category();
+        ar.setCategory_id(jsonObject.optInt("category_id"));
+        ar.setDisplay_category_name(jsonObject.optString("display_category_name"));
+        ar.setUrl_category_name(jsonObject.optString("url_category_name"));
+        ar.setEnglish_category_name(jsonObject.optString("english_category_name"));
+        return ar;
+    }
+
 
     boolean isFirst = true;
     String categoryName;
@@ -381,27 +372,7 @@ public class MainActivity extends ActionBarActivity implements ArticleReceiver.R
                             // utilProvider.insertCategory(c);
                             for (int i = 0; i < r.length(); i++) {
 
-                                Article ar = new Article();
-                                JSONObject js = new JSONObject(r.optString(i));
-                                ar.setSummary(Util.prettifyString(js.optString("summary")));
-                                ar.setUrl(js.optString("url"));
-                                ar.setTitle(js.optString("title"));
-                                ar.setSource_url(js.optString("source_url"));
-                                ar.setSource(js.optString("source"));
-                                ar.setPublish_date(js.optString("publish_date"));
-                                ar.setAuthor(js.optString("author"));
-                                ar.setCategory_id(categoryID);
-                                // Log.i(TAG, ar.getPublish_date());
-                                if (js.optJSONArray("enclosures") != null) {
-                                    for (int x = 0; x < js.optJSONArray("enclosures").length(); x++) {
-                                        JSONObject encl = (JSONObject) js.optJSONArray("enclosures").get(x);
-                                        // Log.i(TAG, encl.toString() + " hello");
-                                        ar.setMedia_type(encl.optString("media_type"));
-                                        ar.setUri(encl.optString("uri"));
-                                    }
-                                }
-                                // response.setArticle(ar);
-
+                                Article ar = articleModel(new JSONObject(r.optString(i)), categoryID);
                                 articles.add(ar);
                                 utilProvider.insertArticle(ar);
                             }
@@ -426,16 +397,39 @@ public class MainActivity extends ActionBarActivity implements ArticleReceiver.R
 
     }
 
+    private Article articleModel(JSONObject js, int categoryID) throws JSONException {
+        Article ar = new Article();
+        ar.setSummary(Util.prettifyString(js.optString("summary")));
+        ar.setUrl(js.optString("url"));
+        ar.setTitle(js.optString("title"));
+        ar.setSource_url(js.optString("source_url"));
+        ar.setSource(js.optString("source"));
+        ar.setPublish_date(js.optString("publish_date"));
+        ar.setAuthor(js.optString("author"));
+        ar.setCategory_id(categoryID);
+        // Log.i(TAG, ar.getPublish_date());
+        if (js.optJSONArray("enclosures") != null) {
+            for (int x = 0; x < js.optJSONArray("enclosures").length(); x++) {
+                JSONObject encl = (JSONObject) js.optJSONArray("enclosures").get(x);
+                // Log.i(TAG, encl.toString() + " hello");
+                ar.setMedia_type(encl.optString("media_type"));
+                ar.setUri(encl.optString("uri"));
+            }
+        }
+        return ar;
+    }
+
     @Override
     public void onBackPressed() {
-        if(isFirst){
+        if (isFirst) {
             super.onBackPressed();
         }
-        isFirst=true;
+        isFirst = true;
         mDrawerLayout.openDrawer(drawerListView);
 
 
     }
+
 
     private void refresher() {
         TimerUtil.startTimer(new TimerUtil.TimerListener() {
