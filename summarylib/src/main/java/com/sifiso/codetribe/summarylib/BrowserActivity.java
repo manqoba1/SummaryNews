@@ -71,7 +71,7 @@ public class BrowserActivity extends ActionBarActivity {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             view.loadUrl(url);
-            // progressBar.setVisibility(View.GONE);
+             progressBar.setVisibility(View.GONE);
             return true;
         }
 

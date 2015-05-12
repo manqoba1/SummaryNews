@@ -75,11 +75,7 @@ public class NewsFeedsAdapter extends RecyclerView.Adapter<NewsFeedsAdapter.News
                 listener.onArticleView(article);
             }
         });
-        if(article.getSummary().trim().isEmpty() || article == null){
-            holder.cardView.setVisibility(View.GONE);
-           // mList.remove(article);
 
-        }
         if (article.getUri() != null) {
             if (article.getMedia_type().equals("image/jpeg")) {
                 //holder.FC_url.setImageUrl(article.getUri(),new com.android.volley.toolbox.ImageLoader());

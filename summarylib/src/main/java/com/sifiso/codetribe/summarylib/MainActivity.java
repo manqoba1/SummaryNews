@@ -9,6 +9,8 @@ import android.net.Uri;
 import android.os.Handler;
 
 
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -68,7 +70,9 @@ public class MainActivity extends ActionBarActivity implements ArticleReceiver.R
     private String[] titles;
     private List<String> sTitles = new ArrayList<>();
     private UtilProvider utilProvider;
-    int itemIndex = 2;
+    int itemIndex = 1;
+    FragmentManager fragmentManager;
+    FragmentTransaction fragmentTransaction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +82,9 @@ public class MainActivity extends ActionBarActivity implements ArticleReceiver.R
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         //progressBar.setVisibility(View.GONE);
+        fragmentManager = getSupportFragmentManager();
+        fragmentTransaction = fragmentManager.beginTransaction();
+
         utilProvider = new UtilProvider(ctx);
         drawerListView = (ListView) findViewById(R.id.left_drawer);
         LayoutInflater in = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -90,6 +97,19 @@ public class MainActivity extends ActionBarActivity implements ArticleReceiver.R
         }
     }
 
+    private void setFragment() {
+
+        newsFeeds = new NewsFeeds();
+        Bundle b = new Bundle();
+        b.putSerializable("articles", articles);
+        newsFeeds.setArguments(b);
+        fragmentTransaction.replace(R.id.content_frame, newsFeeds);
+        fragmentTransaction.commit();
+
+        // fm.add(R.id.content_frame, newsFeeds, null).commit();
+
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -99,12 +119,9 @@ public class MainActivity extends ActionBarActivity implements ArticleReceiver.R
         wr = WebCheck.checkNetworkAvailability(getApplicationContext());
 
         Log.d(TAG, "is onStart connected");
-        if (wr.isMobileConnected() || wr.isWifiConnected()) {
-            Log.d(TAG, "is mobile connected");
-            getData();
-        } else {
-            getLocalCategories();
-        }
+
+        getLocalCategories();
+
 
         // refresher();
         return true;
@@ -133,16 +150,29 @@ public class MainActivity extends ActionBarActivity implements ArticleReceiver.R
     }
 
     private void getLocalCategories() {
-        categories = utilProvider.getAllCategory(getContentResolver());
+
+        utilProvider.getAllCategory(getContentResolver(), new UtilProvider.UtilProviderInterface() {
+            @Override
+            public void onCategoryList(ArrayList<Category> cat) {
+                categories = cat;
+                if (wr.isMobileConnected() || wr.isWifiConnected()) {
+                    Log.d(TAG, "is mobile connected");
+                    getData();
+                }
+            }
+
+            @Override
+            public void onArticleList(ArrayList<Article> articles) {
+
+            }
+
+            @Override
+            public void onError() {
+
+            }
+        });
         mDrawerAdapter = new DrawerAdapter(getApplicationContext(), R.layout.drawer_items, categories);
         drawerListView.setAdapter(mDrawerAdapter);
-       /* LayoutInflater in = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = in.inflate(R.layout.hero_drawer, null);
-        View footer = in.inflate(R.layout.drawer_footer, null);
-        Button img = (Button) v.findViewById(R.id.button);
-        //img.setImageDrawable(Util.getRandomHeroImage(ctx));
-        drawerListView.addHeaderView(v);
-        drawerListView.addFooterView(footer);*/
 
         drawerListView.setSelection(itemIndex);
         drawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -157,22 +187,45 @@ public class MainActivity extends ActionBarActivity implements ArticleReceiver.R
                 mDrawerLayout.closeDrawers();
             }
         });
+        if (!categories.isEmpty()) {
+            setSelect();
+        }
 
-        setSelect();
 
     }
 
     private void getArticleByCategoryID(int id) {
         articles = new ArrayList<>();
-        articles = utilProvider.getArticleByCategoryID(getContentResolver(), id);
-        //  Toast.makeText(ctx, "No articles found {0}"+id, Toast.LENGTH_LONG).show();
+        // articles
+        utilProvider.getArticleByCategoryID(getContentResolver(), id, new UtilProvider.UtilProviderInterface() {
+            @Override
+            public void onCategoryList(ArrayList<Category> categories) {
 
-        if (articles == null || articles.isEmpty()) {
-            // Toast.makeText(ctx, "No articles found, please connect to internet/mobile network", Toast.LENGTH_LONG).show();
-            setEmptyError();
-            return;
-        }
-        setFragment();
+            }
+
+            @Override
+            public void onArticleList(ArrayList<Article> art) {
+                articles = art;
+
+                if (articles == null || articles.isEmpty()) {
+                    setEmptyError();
+                    return;
+                }
+                Log.d(TAG, "is mobile connected");
+                setFragment();
+                if (wr.isMobileConnected() || wr.isWifiConnected()) {
+                    Log.d(TAG, "is mobile connected");
+                    getDataArticle(categories.get(itemIndex).getCategory_id(), null);
+                }
+            }
+
+            @Override
+            public void onError() {
+
+            }
+        });
+
+
     }
 
     @Override
@@ -275,7 +328,8 @@ public class MainActivity extends ActionBarActivity implements ArticleReceiver.R
                                     itemIndex = i - 1;
                                     setTitle(categories.get(itemIndex).getEnglish_category_name());
                                     categoryName = categories.get(itemIndex).getEnglish_category_name();
-                                    getDataArticle(categories.get(itemIndex).getCategory_id(), null, categories.get(itemIndex));
+                                    getArticleByCategoryID(categories.get(itemIndex).getCategory_id());
+
                                     drawerListView.setSelection(i);
                                     // mDrawerLayout.setDrawerTitle(i, sTitles.get(i));
                                     mDrawerLayout.closeDrawers();
@@ -327,20 +381,6 @@ public class MainActivity extends ActionBarActivity implements ArticleReceiver.R
 
     NewsFeeds newsFeeds;
 
-    private void setFragment() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                newsFeeds = new NewsFeeds();
-                Bundle b = new Bundle();
-                b.putSerializable("articles", articles);
-                newsFeeds.setArguments(b);
-                getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, newsFeeds).commit();
-                // fm.add(R.id.content_frame, newsFeeds, null).commit();
-            }
-        });
-
-    }
 
     private void setEmptyError() {
         runOnUiThread(new Runnable() {
@@ -355,10 +395,10 @@ public class MainActivity extends ActionBarActivity implements ArticleReceiver.R
 
     }
 
-    private void getDataArticle(final int categoryID, String searcher, final Category c) {
+    private void getDataArticle(final int categoryID, String searcher) {
         RequestData data = new RequestData();
         data.setArticleByCategory(categoryID, searcher);
-        //progressBar.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
         Log.d(TAG, "id : " + categoryID);
         BaseVolley.getRemoteData(data, getApplicationContext(), new BaseVolley.BohaVolleyListener() {
             @Override
@@ -368,8 +408,9 @@ public class MainActivity extends ActionBarActivity implements ArticleReceiver.R
                     public void run() {
                         try {
                             articles = new ArrayList<Article>();
-                            Log.d(TAG, c.getEnglish_category_name());
+                            //Log.d(TAG, c.getEnglish_category_name());
                             // utilProvider.insertCategory(c);
+                            // do back ground here
                             for (int i = 0; i < r.length(); i++) {
 
                                 Article ar = articleModel(new JSONObject(r.optString(i)), categoryID);
@@ -378,7 +419,7 @@ public class MainActivity extends ActionBarActivity implements ArticleReceiver.R
                             }
                             progressBar.setVisibility(View.GONE);
 
-                            setFragment();
+                            //setFragment();
 
                             Log.i(TAG, articles.size() + "");
                         } catch (JSONException e) {

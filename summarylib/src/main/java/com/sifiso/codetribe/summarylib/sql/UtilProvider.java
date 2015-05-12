@@ -6,12 +6,17 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.sifiso.codetribe.summarylib.model.Article;
 import com.sifiso.codetribe.summarylib.model.Category;
 import com.sifiso.codetribe.summarylib.sql.SummaryContract.CategoryEntry;
 import com.sifiso.codetribe.summarylib.sql.SummaryContract.ArticleEntry;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,8 +91,9 @@ public class UtilProvider {
         return value;
     }
 
-    public ArrayList<Article> getArticleByCategoryID(ContentResolver contentResolver, int id) {
+    public void getArticleByCategoryID(ContentResolver contentResolver, int id, UtilProviderInterface listener) {
         ArrayList<Article> list = new ArrayList<>();
+        mListener = listener;
         try {
             Uri getArticlesOfCategoryUri = Uri.parse(ArticleEntry.CONTENT_URI.toString() + "/" + SummaryContract.PATH_CATEGORY + "/" + id);
             Cursor cursor = contentResolver.query(getArticlesOfCategoryUri, null, null, null, null);
@@ -95,15 +101,22 @@ public class UtilProvider {
                 while (cursor.moveToNext()) {
                     list.add(fromCursorArticle(cursor));
                 }
+                mListener.onArticleList(list);
             } else {
-                return null;
+                mListener.onError();
             }
         } catch (Exception e) {
 
         }
-        return list;
     }
-    public ArrayList<Category> getAllCategory(ContentResolver contentResolver) {
+    public interface UtilProviderInterface{
+        public void onCategoryList(ArrayList<Category> categories);
+        public void onArticleList(ArrayList<Article> articles);
+        public void onError();
+    }
+    private UtilProviderInterface mListener;
+    public void getAllCategory(ContentResolver contentResolver, UtilProviderInterface listener) {
+        mListener = listener;
         ArrayList<Category> list = new ArrayList<>();
         try {
             Uri getCategoryUri = Uri.parse(CategoryEntry.CONTENT_URI.toString());
@@ -112,13 +125,13 @@ public class UtilProvider {
                 while (cursor.moveToNext()) {
                     list.add(fromCursorCategory(cursor));
                 }
+                mListener.onCategoryList(list);
             } else {
-                return null;
+               mListener.onError();
             }
         } catch (Exception e) {
 
         }
-        return list;
     }
 
     private static Article fromCursorArticle(Cursor cursor) {
@@ -138,4 +151,5 @@ public class UtilProvider {
         category.setEnglish_category_name(cursor.getString(cursor.getColumnIndex(CategoryEntry.COLUMN_CATEGORY_NAME)));
         return category;
     }
+
 }

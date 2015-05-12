@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center"
     tools:context="com.sifiso.codetribe.summarylib.fragment.EmptyFragment">
 
     <!-- TODO: Update blank fragment layout -->
@@ -11,19 +12,17 @@
         android:text="@string/hello_blank_fragment"
         android:gravity="center"
         android:layout_below="@+id/imageView"
-        android:layout_alignParentStart="true"
         android:layout_marginTop="25dp" />
 
     <ImageView
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:id="@+id/imageView"
         android:src="@android:drawable/stat_notify_error"
-        android:layout_gravity="center_horizontal|top"
+        android:layout_gravity="center_horizontal|center_vertical"
         android:backgroundTintMode="@color/absa_red"
         android:background="@color/orange"
         android:backgroundTint="@color/yellow"
-        android:layout_marginTop="76dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
