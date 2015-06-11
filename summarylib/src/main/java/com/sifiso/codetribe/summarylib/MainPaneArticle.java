@@ -1,5 +1,7 @@
 package com.sifiso.codetribe.summarylib;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
@@ -11,15 +13,21 @@ import com.sifiso.codetribe.summarylib.fragment.EmptyFragment;
 import com.sifiso.codetribe.summarylib.fragment.NewsFeedsFragment;
 import com.sifiso.codetribe.summarylib.model.Article;
 import com.sifiso.codetribe.summarylib.model.Category;
+import com.sifiso.codetribe.summarylib.util.WebCheck;
+import com.sifiso.codetribe.summarylib.util.WebCheckResult;
 
 
 public class MainPaneArticle extends FragmentActivity implements NewsFeedsFragment.OnFragmentInteractionListener {
     NewsFeedsFragment fragmentItemDetail;
     Category category;
+    WebCheckResult wr;
+    Context ctx;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_pane_article);
+        ctx = getApplicationContext();
+        wr = WebCheck.checkNetworkAvailability(ctx);
         category = (Category) getIntent().getSerializableExtra("category");
         if (savedInstanceState == null) {
 
@@ -61,6 +69,13 @@ public class MainPaneArticle extends FragmentActivity implements NewsFeedsFragme
     @Override
     public void onArticleClicked(Article article) {
 
+        if (wr.isWifiConnected()||wr.isMobileConnected()) {
+            Intent intent = new Intent(MainPaneArticle.this, BrowserActivity.class);
+            intent.putExtra("article", article);
+            intent.putExtra("header", category.getEnglish_category_name());
+            startActivity(intent);
+
+        }
     }
 
     @Override

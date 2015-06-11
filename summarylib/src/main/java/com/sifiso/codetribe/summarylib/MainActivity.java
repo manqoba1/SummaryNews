@@ -493,7 +493,7 @@ public class MainActivity extends ActionBarActivity implements ArticleReceiver.R
     @Override
     public void onArticleClicked(Article article) {
         wr = WebCheck.checkNetworkAvailability(ctx);
-        if (wr.isWifiConnected()) {
+        if (wr.isWifiConnected()||wr.isMobileConnected()) {
             Intent intent = new Intent(MainActivity.this, BrowserActivity.class);
             intent.putExtra("article", article);
             intent.putExtra("header", categoryName);
