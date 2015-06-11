@@ -3,8 +3,6 @@ package com.sifiso.codetribe.summarylib;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Handler;
 
@@ -29,12 +27,11 @@ import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.sifiso.codetribe.summarylib.adapter.DrawerAdapter;
 import com.sifiso.codetribe.summarylib.fragment.EmptyFragment;
-import com.sifiso.codetribe.summarylib.fragment.NewsFeeds;
+import com.sifiso.codetribe.summarylib.fragment.NewsFeedsFragment;
 import com.sifiso.codetribe.summarylib.model.Article;
 import com.sifiso.codetribe.summarylib.model.Category;
 import com.sifiso.codetribe.summarylib.model.RequestData;
 import com.sifiso.codetribe.summarylib.model.ResponseData;
-import com.sifiso.codetribe.summarylib.sql.SummaryContract;
 import com.sifiso.codetribe.summarylib.sql.UtilProvider;
 import com.sifiso.codetribe.summarylib.toolbox.BaseVolley;
 import com.sifiso.codetribe.summarylib.util.SummaryIntentService;
@@ -48,15 +45,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends ActionBarActivity implements ArticleReceiver.Receiver, NewsFeeds.OnFragmentInteractionListener {
+public class MainActivity extends ActionBarActivity implements ArticleReceiver.Receiver, NewsFeedsFragment.OnFragmentInteractionListener {
 
     private ArticleReceiver mReceiver;
     Gson gson = new Gson();
@@ -99,7 +92,7 @@ public class MainActivity extends ActionBarActivity implements ArticleReceiver.R
 
     private void setFragment() {
 
-        newsFeeds = new NewsFeeds();
+        newsFeeds = new NewsFeedsFragment();
         Bundle b = new Bundle();
         b.putSerializable("articles", articles);
         newsFeeds.setArguments(b);
@@ -379,7 +372,7 @@ public class MainActivity extends ActionBarActivity implements ArticleReceiver.R
         }
     }
 
-    NewsFeeds newsFeeds;
+    NewsFeedsFragment newsFeeds;
 
 
     private void setEmptyError() {
@@ -517,5 +510,10 @@ public class MainActivity extends ActionBarActivity implements ArticleReceiver.R
             return;
         }
         Toast.makeText(ctx, R.string.connect_to_browser, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onError() {
+
     }
 }

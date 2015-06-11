@@ -4,7 +4,13 @@
     android:layout_height="match_parent"
     android:gravity="center"
     tools:context="com.sifiso.codetribe.summarylib.fragment.EmptyFragment">
-
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:padding="@dimen/mon_wide"
+        android:visibility="visible" />
     <!-- TODO: Update blank fragment layout -->
     <TextView
         android:layout_width="match_parent"
@@ -25,5 +31,6 @@
         android:backgroundTint="@color/yellow"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
+
 
 </RelativeLayout>

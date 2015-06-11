@@ -12,8 +12,8 @@
     </style>
 
     <style name="AppBaseTheme" parent="android:Theme.Holo.Light">
-        <item name="colorPrimary">@color/opaque_red</item>
-        <item name="colorPrimaryDark">@color/orange</item>
+        <item name="colorPrimary">@color/grey</item>
+        <item name="colorPrimaryDark">@color/Gray</item>
         <item name="android:titleTextStyle">@style/actionBarStyle</item>
         <item name="android:fontFamily">sans-serif-light</item>
 

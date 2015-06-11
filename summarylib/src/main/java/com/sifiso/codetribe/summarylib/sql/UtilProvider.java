@@ -106,15 +106,20 @@ public class UtilProvider {
                 mListener.onError();
             }
         } catch (Exception e) {
-
+            Log.e(LOG, "", e);
         }
     }
-    public interface UtilProviderInterface{
+
+    public interface UtilProviderInterface {
         public void onCategoryList(ArrayList<Category> categories);
+
         public void onArticleList(ArrayList<Article> articles);
+
         public void onError();
     }
+
     private UtilProviderInterface mListener;
+
     public void getAllCategory(ContentResolver contentResolver, UtilProviderInterface listener) {
         mListener = listener;
         ArrayList<Category> list = new ArrayList<>();
@@ -127,7 +132,7 @@ public class UtilProvider {
                 }
                 mListener.onCategoryList(list);
             } else {
-               mListener.onError();
+                mListener.onError();
             }
         } catch (Exception e) {
 
@@ -145,6 +150,7 @@ public class UtilProvider {
         article.setUrl(cursor.getString(cursor.getColumnIndex(ArticleEntry.COLUMN_ARTICLE_URL)));
         return article;
     }
+
     private static Category fromCursorCategory(Cursor cursor) {
         Category category = new Category();
         category.setCategory_id(cursor.getInt(cursor.getColumnIndex(CategoryEntry._ID)));

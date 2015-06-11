@@ -13,4 +13,6 @@
     <string name="title_activity_browser">Browser</string>
     <string name="notification_title">SummaryNews</string>
     <string name="connect_to_browser">Connect to browser your article...</string>
+    <string name="title_activity_main_dual_pane">Eazy Read</string>
+    <string name="title_activity_main_pane_article">MainPaneArticle</string>
 </resources>

@@ -10,6 +10,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 
 import com.sifiso.codetribe.summarylib.MainActivity;
+import com.sifiso.codetribe.summarylib.MainPaneCategory;
 import com.sifiso.codetribe.summarylib.R;
 
 /**
@@ -55,7 +56,7 @@ public class NetUtil {
         mNotificationManager = (NotificationManager) ctx
                 .getSystemService(ctx.NOTIFICATION_SERVICE);
 
-        Intent resultIntent = new Intent(ctx, MainActivity.class);
+        Intent resultIntent = new Intent(ctx, MainPaneCategory.class);
         resultIntent.putExtra("refresh", true);
 
 

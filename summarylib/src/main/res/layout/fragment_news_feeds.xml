@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="8dp"
-    tools:context="com.sifiso.codetribe.summarylib.fragment.NewsFeeds">
+    tools:context="com.sifiso.codetribe.summarylib.fragment.NewsFeedsFragment">
 
 
     <android.support.v7.widget.RecyclerView
@@ -11,6 +11,14 @@
         android:layout_width="match_parent"
 
         android:layout_height="match_parent" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:padding="@dimen/mon_wide"
+        android:visibility="visible" />
 
 
 </RelativeLayout>
